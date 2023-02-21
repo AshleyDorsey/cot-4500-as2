@@ -187,6 +187,7 @@ def hermite_interpolation():
         denominator = x_points[index] - x_points[index - 2]
         # set the next spot in the matrix equal to the numerator divided by the denominator
         matrix[i + 1][2] = numerator / denominator
+        matrix[5][2] = slopes[2]
         # add one to the index
         index += 1
     
