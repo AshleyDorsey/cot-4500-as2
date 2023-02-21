@@ -43,7 +43,7 @@ def nevilles_method(x_points, y_points, approximated_x):
             # set the matrix equal to the coefficient
             matrix[i][j] = coefficient
     
-    # print(matrix, "\n") - check, comment out later
+    # print(matrix, "\n")
     # print the specific part of the matrix needed, add a newline
     print(matrix[num_of_points - 1][num_of_points - 1], "\n")
 
@@ -54,31 +54,19 @@ def nevilles_method(x_points, y_points, approximated_x):
 
 # create the function newton_method_and_approx, which will solve both question 2 and 3. The first part will
 # use the x-values and y-values to then create the rest of the derivatives, in order to solve for approximations
-def newton_method_and_approx():
-    # input the x-values:
-    x_0 = 7.2
-    x_1 = 7.4
-    x_2 = 7.5
-    x_3 = 7.6
-
-    # input the y-values:
-    f_x_0 = 23.5492
-    f_x_1 = 25.3913
-    f_x_2 = 26.8224
-    f_x_3 = 27.4589
-
+def newton_method_and_approx(x_values, f_x):
     # start the calculations:
     # first derivative is the subtraction of y-values over the subtraction of x-values
-    first_dd_1 = (f_x_1 - f_x_0) / (x_1 - x_0)
-    first_dd_2 = (f_x_2 - f_x_1) / (x_2 - x_1)
-    first_dd_3 = (f_x_3 - f_x_2) / (x_3 - x_2)
+    first_dd_1 = (f_x[1] - f_x[0]) / (x_values[1] - x_values[0])
+    first_dd_2 = (f_x[2] - f_x[1]) / (x_values[2] - x_values[1])
+    first_dd_3 = (f_x[3] - f_x[2]) / (x_values[3] - x_values[2])
 
     # second derivative is the subtraction of the first derivatives over the subtraction of x-values
-    second_dd_1 = (first_dd_2 - first_dd_1) / (x_2 - x_0)
-    second_dd_2 = (first_dd_3 - first_dd_2) / (x_3 - x_1)
+    second_dd_1 = (first_dd_2 - first_dd_1) / (x_values[2] - x_values[0])
+    second_dd_2 = (first_dd_3 - first_dd_2) / (x_values[3] - x_values[1])
 
     # third derivative is the subtraction of the second derivatives over the subtraction of x-values
-    third_dd = (second_dd_2 - second_dd_1) / (x_3 - x_0)
+    third_dd = (second_dd_2 - second_dd_1) / (x_values[3] - x_values[0])
 
     # set degree_approximation equal to what is being asked for
     degree_approximation = [first_dd_1, second_dd_1, third_dd]
@@ -95,8 +83,9 @@ def newton_method_and_approx():
     # minus x0, then add on the first second derivative, multiply that by the approximated value minus x1
     # and by the approximated value minus x0, then add the third derivative multiplied by what the last two
     # were multiplied by and the approximated value minus x2.
-    polynomial_approx = f_x_0 + first_dd_1 * (approx_x - x_0) + second_dd_1 * (approx_x - x_1) * (approx_x - x_0)\
-          + third_dd * (approx_x - x_2) * (approx_x - x_1) * (approx_x - x_0)
+    polynomial_approx = f_x[0] + first_dd_1 * (approx_x - x_values[0]) + second_dd_1 * (approx_x - x_values[1]) *\
+                         (approx_x - x_values[0]) + third_dd * (approx_x - x_values[2]) *\
+                         (approx_x - x_values[1]) * (approx_x - x_values[0])
     
     # print the calculation and add a newline
     print(polynomial_approx, "\n")
@@ -255,10 +244,10 @@ def cubic_spline(x_points, y_points):
 
 # main function:
 if __name__ == "__main__":
-    # requirement from assignment
+    # requirement from assignment to cover decimal places
     np.set_printoptions(precision = 7, suppress = True, linewidth = 100)
     
-    # 1
+    # 1 - Neville's Method (looking for last row and column value)
     # x-values
     x_points = [3.6, 3.8, 3.9]
     # y-values
@@ -267,13 +256,17 @@ if __name__ == "__main__":
     approximated_x = 3.7 
     nevilles_method(x_points, y_points, approximated_x)
 
-    # 2 and 3
-    newton_method_and_approx()
+    # 2 and 3 - Newton's Forward Method (looking for degree approximations and value approximations)
+    # x-values
+    x_values = [7.2, 7.4, 7.5, 7.6]
+    # y-values
+    f_x = [23.5492, 25.3913, 26.8224, 27.4589]
+    newton_method_and_approx(x_values, f_x)
 
-    # 4
+    # 4 - Hermite Interpolation (looking for full matrix)
     hermite_interpolation()
 
-    # 5
+    # 5 - Cubic Spline (looking for a matrix A, vector B, and vector D)
     # x-values
     x = [2, 5, 8, 10]
     # y-values
