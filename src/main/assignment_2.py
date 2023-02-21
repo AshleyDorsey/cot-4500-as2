@@ -1,5 +1,4 @@
 # import the libraries necessary: numpy and solve from scipy
-
 import numpy as np
 from scipy.linalg import solve
 
@@ -57,34 +56,34 @@ def nevilles_method(x_points, y_points, approximated_x):
 # use the x-values and y-values to then create the rest of the derivatives, in order to solve for approximations
 def newton_method_and_approx():
     # input the x-values:
-    x0 = 7.2
-    x1 = 7.4
-    x2 = 7.5
-    x3 = 7.6
+    x_0 = 7.2
+    x_1 = 7.4
+    x_2 = 7.5
+    x_3 = 7.6
 
     # input the y-values:
-    f_x0 = 23.5492
-    f_x1 = 25.3913
-    f_x2 = 26.8224
-    f_x3 = 27.4589
+    f_x_0 = 23.5492
+    f_x_1 = 25.3913
+    f_x_2 = 26.8224
+    f_x_3 = 27.4589
 
     # start the calculations:
     # first derivative is the subtraction of y-values over the subtraction of x-values
-    first_dd_1 = (f_x1 - f_x0) / (x1 - x0)
-    first_dd_2 = (f_x2 - f_x1) / (x2 - x1)
-    first_dd_3 = (f_x3 - f_x2) / (x3 - x2)
+    first_dd_1 = (f_x_1 - f_x_0) / (x_1 - x_0)
+    first_dd_2 = (f_x_2 - f_x_1) / (x_2 - x_1)
+    first_dd_3 = (f_x_3 - f_x_2) / (x_3 - x_2)
 
     # second derivative is the subtraction of the first derivatives over the subtraction of x-values
-    second_dd_1 = (first_dd_2 - first_dd_1) / (x2 - x0)
-    second_dd_2 = (first_dd_3 - first_dd_2) / (x3 - x1)
+    second_dd_1 = (first_dd_2 - first_dd_1) / (x_2 - x_0)
+    second_dd_2 = (first_dd_3 - first_dd_2) / (x_3 - x_1)
 
     # third derivative is the subtraction of the second derivatives over the subtraction of x-values
-    third_dd = (second_dd_2 - second_dd_1) / (x3 - x0)
+    third_dd = (second_dd_2 - second_dd_1) / (x_3 - x_0)
 
-    # set d equal to what is being asked for
-    d = [first_dd_1, second_dd_1, third_dd]
-    # print d and add a newline
-    print(d, "\n")
+    # set degree_approximation equal to what is being asked for
+    degree_approximation = [first_dd_1, second_dd_1, third_dd]
+    # print degree_approximation and add a newline
+    print(degree_approximation, "\n")
     
     # 3. Using the results from 2, approximate f(7.3)?
 
@@ -96,11 +95,11 @@ def newton_method_and_approx():
     # minus x0, then add on the first second derivative, multiply that by the approximated value minus x1
     # and by the approximated value minus x0, then add the third derivative multiplied by what the last two
     # were multiplied by and the approximated value minus x2.
-    p_x = f_x0 + first_dd_1 * (approx_x - x0) + second_dd_1 * (approx_x - x1) * (approx_x - x0)\
-          + third_dd * (approx_x - x2) * (approx_x - x1) * (approx_x - x0)
+    polynomial_approx = f_x_0 + first_dd_1 * (approx_x - x_0) + second_dd_1 * (approx_x - x_1) * (approx_x - x_0)\
+          + third_dd * (approx_x - x_2) * (approx_x - x_1) * (approx_x - x_0)
     
     # print the calculation and add a newline
-    print(p_x, "\n")
+    print(polynomial_approx, "\n")
 
 
 # 4. Using the divided difference method, print out the Hermite polynomial approximation matrix
@@ -173,21 +172,13 @@ def hermite_interpolation():
         # add one to the index
         index += 1
 
-
     # populate the derivatives (every other row):
     # set the index equal to 0
     index = 0
     # use a for loop to go through the matrix
-    for i in range(1, size * 2 - 1, 2):
+    for i in range(1, size * 2, 2):
         # for the current matrix spot, print the slope
         matrix[i][2] = slopes[index]
-        # numerator is equal to the y-value at the current spot minus 2 spots ago
-        numerator = y_points[index] - y_points[index - 2]
-        # denominator is equal to the x-value at the current spot minus 2 spots ago
-        denominator = x_points[index] - x_points[index - 2]
-        # set the next spot in the matrix equal to the numerator divided by the denominator
-        matrix[i + 1][2] = numerator / denominator
-        matrix[5][2] = slopes[2]
         # add one to the index
         index += 1
     
@@ -204,56 +195,63 @@ def hermite_interpolation():
 #       (c) Vector c       
 
 # create the cubic_spline function to create a matrix and two vectors from the give x- and y-values
-def cubic_spline(x, y):
+def cubic_spline(x_points, y_points):
     # set the size equal to the lens of the x-values
-    size = len(x)
+    size = len(x_points)
     # set the matrix equal to the size
-    matrix: np.array = np.zeros((size, size))
+    matrix_A: np.array = np.zeros((size, size))
 
     # start creating the matrix:
     # the starting value is 1
-    matrix[0][0] = 1
+    matrix_A[0][0] = 1
     # subtract the x-values
-    matrix[1][0] = x[1] - x[0]
+    matrix_A[1][0] = x_points[1] - x_points[0]
     # double the additions of two x-value subtractions
-    matrix[1][1] = 2 * ((x[1] - x[0]) + (x[2] - x[1]))
+    matrix_A[1][1] = 2 * ((x_points[1] - x_points[0]) + (x_points[2] - x_points[1]))
     # subtract x-values
-    matrix[1][2] = x[2] - x[1]
-    matrix[2][1] = x[2] - x[1]
+    matrix_A[1][2] = x_points[2] - x_points[1]
+    matrix_A[2][1] = x_points[2] - x_points[1]
     # double the additions of two x-value subtractions
-    matrix[2][2] = 2 * ((x[3] - x[2]) + (x[2] - x[1]))
+    matrix_A[2][2] = 2 * ((x_points[3] - x_points[2]) + (x_points[2] - x_points[1]))
     # subtract x-values
-    matrix[2][3] = x[3] - x[2]
+    matrix_A[2][3] = x_points[3] - x_points[2]
     # starts and ends the same way
-    matrix[3][3] = 1
+    matrix_A[3][3] = 1
+    
     # print the matrix and add a newline
-    print(matrix, "\n")
+    print(matrix_A, "\n")
 
     # start preparing for the first vector
+    
     # c0 and c3 both equal 0
     c0 = 0
     # c1 and c2 are the subtraction of 3 divided by the subtraction of x-values multiplied by 
     # the subtraction of y-values
-    c1 = ((3 / (x[2] - x[1])) * (y[2] - y[1])) - ((3 / (x[1] - x[0])) * (y[1] - y[0]))
-    c2 = ((3 / (x[3] - x[2])) * (y[3] - y[2])) - ((3 / (x[2] - x[1])) * (y[2] - y[1]))
+    c1 = ((3 / (x_points[2] - x_points[1])) * (y_points[2] - y_points[1])) -\
+          ((3 / (x_points[1] - x_points[0])) * (y_points[1] - y_points[0]))
+    c2 = ((3 / (x_points[3] - x_points[2])) * (y_points[3] - y_points[2])) -\
+          ((3 / (x_points[2] - x_points[1])) * (y_points[2] - y_points[1]))
     c3 = 0
-    # set c equal to an array of c0, c1, c2, and c3
-    c = np.array([c0, c1, c2, c3])
-    # print c and add a newline
-    print(c, "\n")
+    
+    # set vector_b equal to an array of c0, c1, c2, and c3
+    vector_b = np.array([c0, c1, c2, c3])
+    
+    # print vector_b and add a newline
+    print(vector_b, "\n")
 
     # start the second vector
-    # set f equal to matrix A
-    f = [[matrix]]
-    # set g equal to the values c0, c1, c2, c3
-    g = [[c0], [c1], [c2], [c3]]
+    # set function_one equal to matrix A
+    function_one = [[matrix_A]]
+    # set function_two equal to the values c0, c1, c2, c3
+    function_two = [[c0], [c1], [c2], [c3]]
 
-    # use solve from scipy to solve the system of equation, and set equal to h
-    h = solve(f, g)
+    # use solve from scipy to solve the system of equation, and set equal to system_of_equations
+    system_of_equations = solve(function_one, function_two)
 
-    # print the transposed h, but only the first line, and add a newline
-    print(h.T[0], "\n")
-
+    # transpose the system_of_equations, but only the first line
+    system_of_equations = system_of_equations.T[0]
+    # print the system_of_equations and add a newline
+    print(system_of_equations, "\n")
 
 # main function:
 if __name__ == "__main__":
